@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>포토파이</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function checkProximity() {
+            fetch("/check_proximity")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.is_near) {
+                        window.location.href = "/enter";
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+        setInterval(checkProximity, 1000);
+    </script>
+</head>
+<body>
+    <h1 class="message">센서 앞에 다가가면 촬영이 시작됩니다.</div>
+</body>
+</html>

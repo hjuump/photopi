@@ -1,0 +1,49 @@
+/* 기본 텍스트 스타일 */
+body {
+  height: 100vh;
+  width: 100wh;
+  background-color: black;
+  color: white;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.options {
+  display: flex;
+  margin-top: 20px;
+}
+
+.count-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 200px;
+  border-radius: 40px;
+  border: 3px solid white;
+  font-size: 50px;
+  margin: 0 15px;
+  opacity: 0.2; /* 기본은 흐리게 */
+}
+
+.count-option.selected {
+  opacity: 1; /* 선택된 항목 강조 */
+  border: 3px solid white;
+  border-radius: 40px;
+}
+.photo-container img {
+  width: 300px;
+  margin-bottom: 30px;
+}
+
+#countdown {
+  font-size: 80px;
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>촬영 시작</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        let countdown = 3;
+        function startCountdown() {
+            document.getElementById("countdown").innerText = countdown;
+            countdown--;
+            if (countdown < 0) {
+                window.location.href = "/capture_photos";
+            } else {
+                setTimeout(startCountdown, 1000);
+            }
+        }
+        window.onload = startCountdown;
+    </script>
+</head>
+<body>
+    <div class="message" id="countdown">3</div>
+</body>
+</html>
