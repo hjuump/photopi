@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>촬영 매수 선택</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        let photoCount = 2;  // 초기 촬영 매수
+
+        // 선택된 촬영 매수를 강조 표시하는 함수
+        function updatePhotoCountDisplay() {
+            const counts = [2, 3, 4];
+            counts.forEach(count => {
+                const element = document.getElementById('count-' + count);
+                if (count === photoCount) {
+                    element.classList.add("selected");  // 선택된 매수 강조
+                } else {
+                    element.classList.remove("selected");  // 선택 해제
+                }
+            });
+        }
+
+        // 스위치 상태를 주기적으로 확인하여 매수를 업데이트
+        function checkSwitches() {
+            fetch("/check_switches")
+                .then(response => response.json())
+                .then(data => {
+                    photoCount = data.next;  // 선택된 매수 업데이트
+                    updatePhotoCountDisplay();  // 화면에 표시
+                    if (data.confirm) {
+                        window.location.href = "/start_photo";  // 촬영 시작 페이지로 이동
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        setInterval(checkSwitches, 500);  // 500ms마다 스위치 상태 확인
+    </script>
+</head>
+<body>
+    <h1>안녕하세요. 스위치를 이용해 촬영 매수를 선택해주세요.</h1>
+    <div class="options">
+        <!-- 선택할 촬영 매수 -->
+        <span id="count-2" class="count-option">2장</span>
+        <span id="count-3" class="count-option">3장</span>
+        <span id="count-4" class="count-option">4장</span>
+    </div>
+</body>
+</html>

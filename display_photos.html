@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>촬영된 사진</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>촬영 완료</h1>
+    <div class="photo-container">
+        {% for photo in photos %}
+            <img src="{{ url_for('static', filename=photo.split('static/')[-1]) }}" alt="Photo {{ loop.index }}">
+        {% endfor %}
+    </div>
+    <div class="message">한 번 더 촬영하기</div>
+</body>
+</html>
