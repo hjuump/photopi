@@ -1,8 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, jsonify
-from sensors import setup_sensors, is_user_near, measure_brightness
+from sensors import setup_sensors, get_distance, measure_brightness
 from switches import setup_switches, get_selected_photo_count, confirm_selection
 from led_control import setup_leds, control_leds
-from camera import take_photo_series  # 카메라 촬영 기능 임포트
+from camera import take_photo_series
 
 app = Flask(__name__)
 
@@ -17,21 +17,16 @@ def home():
 
 @app.route('/check_proximity')
 def check_proximity():
-    is_near = is_user_near()
-    return jsonify(is_near=is_near)
+    distance = get_distance()
+    is_near = distance < 30  # 30cm 이내일 때 입장으로 간주
+    return jsonify(is_near=is_near, distance=distance)
 
 @app.route('/enter')
 def enter_booth():
     brightness = measure_brightness()  # 조도 값 측정
-    if brightness < 500:
-        control_leds(brightness)
-    elif brightness < 300:
-        control_leds(brightness)
-    else:
-        control_leds(brightness)
+    control_leds(brightness)  # 밝기에 따라 LED 제어
     return render_template('select_count.html', message="안녕하세요. 스위치를 이용해 촬영 매수를 선택해주세요.")
 
-# /check_switches 라우트 추가
 @app.route('/check_switches')
 def check_switches():
     selected_count = get_selected_photo_count()  # 선택된 촬영 매수 확인
