@@ -9,6 +9,20 @@
     />
   </head>
   <body>
-    <div class="message">{{ countdown_number }}</div>
+    <h1 id="countdown">{{ countdown_number }}</h1>
+    <script>
+      let countdown = {{ countdown_number }};
+
+      function updateCountdown() {
+          if (countdown > 1) {
+              countdown--;
+              document.getElementById("countdown").innerText = countdown;
+          } else {
+              window.location.href = "{{ url_for('capture_photo') }}";
+          }
+      }
+
+      setInterval(updateCountdown, 1000);
+    </script>
   </body>
 </html>
