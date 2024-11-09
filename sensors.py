@@ -14,6 +14,9 @@ def setup_sensors():
     GPIO.setup(ECHO, GPIO.IN)
 
 def is_user_near(threshold=30):
+    return get_distance() < threshold
+
+def get_distance():
     GPIO.output(TRIG, True)
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
@@ -24,7 +27,7 @@ def is_user_near(threshold=30):
         pulse_end = time.time()
 
     distance = (pulse_end - pulse_start) * 17150
-    return distance < threshold
+    return distance
 
 def measure_brightness():
     return mcp.read_adc(LIGHT_SENSOR_CHANNEL)
