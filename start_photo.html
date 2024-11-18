@@ -22,7 +22,15 @@
     </script>
   </head>
   <body>
-    <header></header>
+    <header class="screen-header">
+        <div class="screen-header__row">
+          <span class="screen-header__text">2024 Project</span>
+        </div>
+        <div class="screen-header__row">
+          <span class="screen-header__text">Photo Pi</span>
+          <img id="pi-logo" src="{{ url_for('static', filename='logo.svg') }}" />
+        </div>
+      </header>
     <main>
       <div class="message" id="countdown">3</div>
     </main>
