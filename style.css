@@ -41,14 +41,34 @@ h1 {
   border: 3px solid white;
   font-size: 50px;
   margin: 0 15px;
-  opacity: 0.2; /* 기본은 흐리게 */
+  opacity: 0.2;
 }
 
 .count-option.selected {
-  opacity: 1; /* 선택된 항목 강조 */
+  opacity: 1;
   border: 0px;
   background-color: #bc1142;
-  border-radius: 40px;
+}
+
+.retake-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 50px;
+  border-radius: 50px;
+  border: 3px solid white;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 30px 15px;
+  opacity: 0.2;
+}
+
+.retake-option.selected {
+  opacity: 1;
+  color: black;
+  border: 0px;
+  background-color: white;
 }
 
 .photo-container img {
