@@ -9,6 +9,9 @@ CONFIRM_BUTTON = 21
 photo_counts = [2, 3, 4]
 current_selection = 0  # 초기 선택된 매수 인덱스
 
+retake_options = [1, 2]  # 1: 다시 촬영하기, 2: 끝내기
+current_retake_selection = 0
+
 def setup_switches():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -30,3 +33,12 @@ def confirm_selection():
         return True
     return False
 
+def get_retake_option():
+    global current_retake_selection
+    if GPIO.input(NEXT_BUTTON):  # NEXT 버튼 눌림 확인
+        current_retake_selection = (current_retake_selection + 1) % len(retake_options)
+        print(f"NEXT_BUTTON Pressed! Current Retake Option: {current_retake_selection}")
+        time.sleep(0.3)  # 디바운싱 지연
+    else:
+        print("NEXT_BUTTON Not Pressed")
+    return retake_options[current_retake_selection]

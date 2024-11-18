@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, url_for, jsonify
+from flask import Flask, render_template, jsonify
 from sensors import setup_sensors, get_distance, measure_brightness
-from switches import setup_switches, get_selected_photo_count, confirm_selection
+from switches import setup_switches, get_selected_photo_count, confirm_selection, get_retake_option
 from led_control import setup_leds, control_leds
 from camera import take_photo_series
 
@@ -46,6 +46,21 @@ def capture_photos():
     photo_count = get_selected_photo_count()
     photos = take_photo_series(photo_count)
     return render_template('display_photos.html', photos=photos)
+
+@app.route('/select_count')
+def select_count():
+    return render_template('select_count.html', message="촬영 매수를 선택해 주세요.")
+
+@app.route('/end')
+def end():
+    return render_template('end.html', message="이용해 주셔서 감사합니다.")
+
+@app.route('/check_retake_switches')
+def check_retake_switches():
+    retake_option = get_retake_option()  # 스위치 입력값 가져오기
+    is_confirmed = confirm_selection()  # 확인 버튼 확인
+    print(f"Retake Option: {retake_option}, Confirmed: {is_confirmed}")  # 디버깅 로그
+    return jsonify(next=retake_option, confirm=is_confirmed)
 
 # 앱 실행을 위한 메인 블록
 if __name__ == "__main__":

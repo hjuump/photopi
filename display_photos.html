@@ -7,6 +7,44 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <script>
+      let retakeOption = 'retry'; // 기본값: 다시 촬영하기
+
+      function updateRetakeOption() {
+        fetch('/check_retake_switches')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Retake Option Received:', data); // 데이터 디버깅
+            retakeOption = data.next === 1 ? 'retry' : 'end';
+            updateOptionDisplay(retakeOption);
+            if (data.confirm) {
+              handleRetakeConfirm(retakeOption);
+            }
+          })
+          .catch((error) => console.error('Error:", error'));
+      }
+
+      function updateOptionDisplay(option) {
+        const options = document.querySelectorAll('.retake-option');
+        options.forEach((element) => {
+          if (element.id === option) {
+            element.classList.add('selected');
+          } else {
+            element.classList.remove('selected');
+          }
+        });
+      }
+
+      function handleRetakeConfirm(option) {
+        if (option === 'retry') {
+          window.location.href = '/select_count'; // 매수 선택 페이지로 이동
+        } else if (option === 'end') {
+          window.location.href = '/end'; // 종료 페이지로 이동
+        }
+      }
+
+      setInterval(updateRetakeOption, 500);
+    </script>
   </head>
   <body>
     <header class="screen-header">
@@ -28,7 +66,10 @@
         />
         {% endfor %}
       </div>
-      <div class="message">한 번 더 촬영하기</div>
+      <div class="options">
+        <div class="retake-option" id="retry">다시 촬영하기</div>
+        <div class="retake-option" id="end">끝내기</div>
+      </div>
     </main>
   </body>
 </html>
