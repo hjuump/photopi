@@ -1,78 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>관리자 페이지</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-      // 조도와 온도 데이터를 서버에서 받아와 그래프를 업데이트하는 코드
-      let lightData = [];
-      let tempData = [];
-      let labels = [];
+        let temperatureData = [];
+        let humidityData = [];
+        let labels = [];
 
-      function updateGraphs() {
-        fetch('/get_sensor_data')
-          .then((response) => response.json())
-          .then((data) => {
-            // 데이터 추가
-            labels.push(data.time);
-            lightData.push(data.light);
-            tempData.push(data.temperature);
+        function updateGraphs() {
+            fetch('/get_sensor_data')
+                .then((response) => response.json())
+                .then((data) => {
+                    labels.push(data.time);
+                    temperatureData.push(data.temperature);
+                    humidityData.push(data.humidity);
 
-            // 데이터 제한
-            if (labels.length > 20) {
-              labels.shift();
-              lightData.shift();
-              tempData.shift();
-            }
+                    if (labels.length > 20) {
+                        labels.shift();
+                        temperatureData.shift();
+                        humidityData.shift();
+                    }
 
-            // 차트 업데이트
-            lightChart.update();
-            tempChart.update();
-          })
-          .catch((error) => console.error('Error:', error));
-      }
+                    temperatureChart.update();
+                    humidityChart.update();
+                })
+                .catch((error) => console.error('Error:', error));
+        }
 
-      setInterval(updateGraphs, 2000); // 2초마다 업데이트
+        setInterval(updateGraphs, 2000);
 
-      window.onload = () => {
-        // 조도 차트
-        const lightCtx = document.getElementById('lightChart').getContext('2d');
-        window.lightChart = new Chart(lightCtx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: '조도 (lux)',
-              data: lightData,
-              borderColor: 'orange',
-              backgroundColor: 'rgba(255, 165, 0, 0.2)',
-            }]
-          }
-        });
+        window.onload = () => {
+            const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+            window.temperatureChart = new Chart(tempCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '온도 (°C)',
+                        data: temperatureData,
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                    }]
+                }
+            });
 
-        // 온도 차트
-        const tempCtx = document.getElementById('tempChart').getContext('2d');
-        window.tempChart = new Chart(tempCtx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: '온도 (°C)',
-              data: tempData,
-              borderColor: 'blue',
-              backgroundColor: 'rgba(0, 0, 255, 0.2)',
-            }]
-          }
-        });
-      };
+            const humCtx = document.getElementById('humidityChart').getContext('2d');
+            window.humidityChart = new Chart(humCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '습도 (%)',
+                        data: humidityData,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                    }]
+                }
+            });
+        };
     </script>
-  </head>
-  <body>
+</head>
+<body>
     <h1>{{ message }}</h1>
     <div>
-      <canvas id="lightChart" width="400" height="200"></canvas>
-      <canvas id="tempChart" width="400" height="200"></canvas>
+        <canvas id="temperatureChart" width="600" height="300"></canvas>
+        <canvas id="humidityChart" width="600" height="300"></canvas>
     </div>
-  </body>
+</body>
 </html>
