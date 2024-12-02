@@ -3,11 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>포토파이</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-
     <script>
       function checkProximity() {
         fetch('/check_proximity')
@@ -23,7 +18,22 @@
           .catch((error) => console.error('Error:', error));
       }
       setInterval(checkProximity, 1000);
+
+      function checkLongPress() {
+        fetch('/check_long_press')
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.pressed) {
+              window.location.href = '/admin_dashboard'; // 관리자 페이지로 이동
+            }
+          })
+          .catch((error) => console.error('Error:', error));
+      }
+
+      // 1초 간격으로 스위치 상태를 확인
+      setInterval(checkLongPress, 1000);
     </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
     <header class="screen-header">
@@ -32,7 +42,7 @@
       </div>
       <div class="screen-header__row">
         <span class="screen-header__text">Photo Pi</span>
-        <img id="pi-logo" src="logo.svg" />
+        <img id="pi-logo" src="{{ url_for('static', filename='logo.svg') }}" />
       </div>
     </header>
     <main>
@@ -48,9 +58,7 @@
           </div>
         </div>
         <div class="sensor-bar">
-          <div class="sensor-bar__info" id="distance">
-            센서와의 거리: 측정 중...
-          </div>
+          <div class="sensor-bar__info" id="distance">센서와의 거리: 측정 중...</div>
         </div>
       </div>
     </main>

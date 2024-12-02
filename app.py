@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify
 from sensors import setup_sensors, get_distance, measure_brightness
-from switches import setup_switches, get_selected_photo_count, confirm_selection, get_retake_option
+from switches import setup_switches, get_selected_photo_count, confirm_selection, get_retake_option, is_long_press
 from led_control import setup_leds, control_leds
 from camera import take_photo_series
 
@@ -61,6 +61,26 @@ def check_retake_switches():
     is_confirmed = confirm_selection()  # 확인 버튼 확인
     print(f"Retake Option: {retake_option}, Confirmed: {is_confirmed}")  # 디버깅 로그
     return jsonify(next=retake_option, confirm=is_confirmed)
+
+@app.route('/check_long_press')
+def check_long_press():
+    is_pressed = is_long_press()  # 스위치 길게 누름 확인
+    return jsonify(pressed=is_pressed)
+
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    return render_template('admin_dashboard.html', message="관리자 페이지에 오신 것을 환영합니다!")
+
+@app.route('/get_sensor_data')
+def get_sensor_data():
+    light = measure_brightness()  # 조도 값
+    temperature = get_temperature()  # 온도 값 (추가 필요)
+    current_time = datetime.datetime.now().strftime("%H:%M:%S")
+    return jsonify({
+        "time": current_time,
+        "light": light,
+        "temperature": temperature
+    })
 
 # 앱 실행을 위한 메인 블록
 if __name__ == "__main__":
