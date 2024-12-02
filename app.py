@@ -3,6 +3,8 @@ from sensors import setup_sensors, get_distance, measure_brightness
 from switches import setup_switches, get_selected_photo_count, confirm_selection, get_retake_option, is_long_press
 from led_control import setup_leds, control_leds
 from camera import take_photo_series
+import datetime
+import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
 
@@ -10,6 +12,11 @@ app = Flask(__name__)
 setup_sensors()
 setup_switches()
 setup_leds()
+
+# 전역 변수
+light_data = 0
+temperature_data = 0
+humidity_data = 0
 
 @app.route('/')
 def home():
@@ -73,14 +80,36 @@ def admin_dashboard():
 
 @app.route('/get_sensor_data')
 def get_sensor_data():
-    light = measure_brightness()  # 조도 값
-    temperature = get_temperature()  # 온도 값 (추가 필요)
+    global light_data, temperature_data, humidity_data
     current_time = datetime.datetime.now().strftime("%H:%M:%S")
     return jsonify({
         "time": current_time,
-        "light": light,
-        "temperature": temperature
+        "light": light_data,
+        "temperature": temperature_data,
+        "humidity": humidity_data
     })
+
+# MQTT 설정
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+    client.subscribe("light")
+    client.subscribe("temperature")
+    client.subscribe("humidity")
+
+def on_message(client, userdata, msg):
+    global light_data, temperature_data, humidity_data
+    if msg.topic == "light":
+        light_data = float(msg.payload.decode())
+    elif msg.topic == "temperature":
+        temperature_data = float(msg.payload.decode())
+    elif msg.topic == "humidity":
+        humidity_data = float(msg.payload.decode())
+
+mqtt_client = mqtt.Client()
+mqtt_client.on_connect = on_connect
+mqtt_client.on_message = on_message
+mqtt_client.connect("localhost", 1883, 60)
+mqtt_client.loop_start()
 
 # 앱 실행을 위한 메인 블록
 if __name__ == "__main__":
