@@ -124,21 +124,26 @@ h1 {
   justify-content: center;
   margin-bottom: 20px;
 }
+
 .sensor-bar__outer {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* 왼쪽 정렬 */
   background-color: rgba(255, 255, 255, 0.3);
   width: 800px;
   height: 30px;
   border-radius: 15px;
+  overflow: hidden; /* 내부 요소가 넘어가지 않도록 설정 */
 }
+
 .sensor-bar__inner {
   border-radius: 10px;
   background-color: #bc1142;
-  width: 785px;
+  width: 0%; /* 초기 너비 설정 */
   height: 20px;
+  transition: width 0.5s ease; /* 부드러운 애니메이션 */
 }
+
 
 .chart__row {
     background-color: rgba(255, 255, 255, 0.1);
