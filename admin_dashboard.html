@@ -17,16 +17,18 @@
                     temperatureData.push(data.temperature);
                     humidityData.push(data.humidity);
 
+                    // 데이터 개수 제한
                     if (labels.length > 20) {
                         labels.shift();
                         temperatureData.shift();
                         humidityData.shift();
                     }
 
-                    temperatureChart.update();
-                    humidityChart.update();
+                    // 차트 업데이트
+                    window.temperatureChart.update();
+                    window.humidityChart.update();
                 })
-                .catch((error) => console.error('Error:', error));
+                .catch((error) => console.error('Error fetching sensor data:', error));
         }
 
         setInterval(updateGraphs, 2000);
@@ -43,6 +45,10 @@
                         borderColor: 'red',
                         backgroundColor: 'rgba(255, 0, 0, 0.2)',
                     }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
                 }
             });
 
@@ -57,16 +63,32 @@
                         borderColor: 'blue',
                         backgroundColor: 'rgba(0, 0, 255, 0.2)',
                     }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
                 }
             });
         };
     </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>{{ message }}</h1>
-    <div>
-        <canvas id="temperatureChart" width="600" height="300"></canvas>
-        <canvas id="humidityChart" width="600" height="300"></canvas>
-    </div>
+    <header class="screen-header">
+        <div class="screen-header__row">
+            <span class="screen-header__text">2024 Project</span>
+        </div>
+        <div class="screen-header__row">
+            <span class="screen-header__text">Photo Pi</span>
+            <img id="pi-logo" src="{{ url_for('static', filename='logo.svg') }}" />
+        </div>
+    </header>
+    <main>
+        <h1>{{ message }}</h1>
+        <div class="canvas__row">
+            <canvas id="temperatureChart"></canvas>
+            <canvas id="humidityChart"></canvas>
+        </div>
+    </main>
 </body>
 </html>
