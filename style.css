@@ -26,7 +26,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 80px;
   width: 100%;
 }
 
@@ -75,8 +75,13 @@ h1 {
   padding: 0px 5px;
 }
 
+.photo-container {
+  padding: 50px 0px;
+}
+
 #countdown {
-  font-size: 80px;
+  font-size: 180px;
+  padding: 150px;
 }
 
 .sensor-bar__info {
@@ -163,4 +168,15 @@ canvas {
   padding: 10px 30px;
   border-radius: 10px;
   margin-bottom: 20px;
+}
+
+#pi-logo__end{
+  width: 150px;
+  margin-top: 70px;
+}
+
+.message__end {
+  font-weight: bold;
+  font-size: 40px;
+  margin-top: 70px;
 }
