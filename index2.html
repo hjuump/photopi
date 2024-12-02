@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>포토파이</title>
+    <script>
+      function checkProximity() {
+        fetch('/check_proximity')
+          .then((response) => response.json())
+          .then((data) => {
+            const distance = data.distance;
+
+            // 거리 텍스트 업데이트
+            document.getElementById('distance').innerText = `센서와의 거리: ${distance} cm`;
+
+            // 바 너비 계산 및 업데이트
+            const barInner = document.querySelector('.sensor-bar__inner');
+            const percentage = Math.max(
+              0,
+              Math.min(((150 - distance) / 120) * 100, 100)
+            ); // 150cm=0%, 30cm=100% 비율 계산
+            barInner.style.width = `${percentage}%`;
+
+            if (data.is_near) {
+              window.location.href = '/enter';
+            }
+          })
+          .catch((error) => console.error('Error:', error));
+      }
+
+      setInterval(checkProximity, 2000); // 2초 간격으로 상태 확인
+
+      function checkLongPress() {
+        fetch('/check_long_press')
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.pressed) {
+              window.location.href = '/admin_dashboard'; // 관리자 페이지로 이동
+            }
+          })
+          .catch((error) => console.error('Error:', error));
+      }
+
+      // 1초 간격으로 스위치 상태를 확인
+      setInterval(checkLongPress, 1000);
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <header class="screen-header">
+      <div class="screen-header__row">
+        <span class="screen-header__text">2024 Project</span>
+      </div>
+      <div class="screen-header__row">
+        <span class="screen-header__text">Photo Pi</span>
+        <img id="pi-logo" src="{{ url_for('static', filename='logo.svg') }}" />
+      </div>
+    </header>
+    <main>
+      <div class="photopi-title">
+        <div>Welcome to</div>
+        <div>Photo Pi</div>
+      </div>
+
+      <div>
+        <div class="sensor-bar">
+          <div class="sensor-bar__outer">
+            <div class="sensor-bar__inner"></div>
+          </div>
+        </div>
+        <div class="sensor-bar">
+          <div class="sensor-bar__info" id="distance">센서와의 거리: 측정 중...</div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
