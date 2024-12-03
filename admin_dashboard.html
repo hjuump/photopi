@@ -9,105 +9,110 @@
         let humidityData = [];
         let lightData = [];
         let labels = [];
+
         function updateGraphs() {
+            fetch('/get_sensor_data')
+                .then((response) => response.json())
+                .then((data) => {
+                    labels.push(data.time);
+                    temperatureData.push(data.temperature);
+                    humidityData.push(data.humidity);
+                    lightData.push(data.light); 
+
+                    // 데이터 개수 제한
+                    if (labels.length > 20) {
+                        labels.shift();
+                        temperatureData.shift();
+                        humidityData.shift();
+                        lightData.shift();
+                    }
+
+                    // 차트 업데이트
+                    window.temperatureChart.update();
+                    window.humidityChart.update();
+                    window.lightChart.update(); 
+                })
+                .catch((error) => console.error('Error fetching sensor data:', error));
+        }
+
+        setInterval(updateGraphs, 2000);
+
+        window.onload = () => {
+            // 온도 차트
+            const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+            const tempGradient = tempCtx.createLinearGradient(0, 0, 0, 400);
+            tempGradient.addColorStop(0, 'rgba(255, 111, 152, 0.6)'); // FF6F98
+            tempGradient.addColorStop(1, 'rgba(255, 111, 152, 0)');
+
+            window.temperatureChart = new Chart(tempCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '온도 (°C)',
+                        data: temperatureData,
+                        borderColor: '#FF6F98',
+                        backgroundColor: tempGradient,
+			fill: true,
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                }
+            });
+
+            // 습도 차트
+            const humCtx = document.getElementById('humidityChart').getContext('2d');
+            const humGradient = humCtx.createLinearGradient(0, 0, 0, 400);
+            humGradient.addColorStop(0, 'rgba(100, 162, 255, 0.6)'); // 64A2FF
+            humGradient.addColorStop(1, 'rgba(100, 162, 255, 0)');
+
+            window.humidityChart = new Chart(humCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '습도 (%)',
+                        data: humidityData,
+                        borderColor: '#64A2FF',
+                        backgroundColor: humGradient,
+                        fill: true, 
+
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                }
+            });
+
+            // 조도 차트
+            const lightCtx = document.getElementById('lightChart').getContext('2d');
+            const lightGradient = lightCtx.createLinearGradient(0, 0, 0, 400);
+            lightGradient.addColorStop(0, 'rgba(255, 225, 92, 0.6)'); // FFE15C
+            lightGradient.addColorStop(1, 'rgba(255, 225, 92, 0)');
+
+            window.lightChart = new Chart(lightCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '조도 (lux)',
+                        data: lightData,
+                        borderColor: '#FFE15C',
+                        backgroundColor: lightGradient,
+                        fill: true, 
+
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                }
+            });
             
-    fetch('/get_sensor_data')
-        .then((response) => response.json())
-        .then((data) => {
-            labels.push(data.time);
-            temperatureData.push(data.temperature);
-            humidityData.push(data.humidity);
-            lightData.push(data.light); // 조도 데이터 추가
-
-            // 데이터 개수 제한
-            if (labels.length > 20) {
-                labels.shift();
-                temperatureData.shift();
-                humidityData.shift();
-                lightData.shift(); // 조도 데이터 제거
-            }
-
-            // 차트 업데이트
-            window.temperatureChart.update();
-            window.humidityChart.update();
-            window.lightChart.update(); // 조도 차트 업데이트
-        })
-        .catch((error) => console.error('Error fetching sensor data:', error));
-}
-
-window.onload = () => {
-    // 온도 차트
-    const tempCtx = document.getElementById('temperatureChart').getContext('2d');
-    const tempGradient = tempCtx.createLinearGradient(0, 0, 0, 400);
-    tempGradient.addColorStop(0, 'rgba(255, 111, 152, 0.6)'); // FF6F98
-    tempGradient.addColorStop(1, 'rgba(255, 111, 152, 0)');
-
-    window.temperatureChart = new Chart(tempCtx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: '온도 (°C)',
-                data: temperatureData,
-                borderColor: '#FF6F98',
-                backgroundColor: tempGradient,
-                fill: true,
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-        }
-    });
-
-    // 습도 차트
-    const humCtx = document.getElementById('humidityChart').getContext('2d');
-    const humGradient = humCtx.createLinearGradient(0, 0, 0, 400);
-    humGradient.addColorStop(0, 'rgba(100, 162, 255, 0.6)'); // 64A2FF
-    humGradient.addColorStop(1, 'rgba(100, 162, 255, 0)');
-
-    window.humidityChart = new Chart(humCtx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: '습도 (%)',
-                data: humidityData,
-                borderColor: '#64A2FF',
-                backgroundColor: humGradient,
-                fill: true,
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-        }
-    });
-
-    // 조도 차트
-    const lightCtx = document.getElementById('lightChart').getContext('2d');
-    const lightGradient = lightCtx.createLinearGradient(0, 0, 0, 400);
-    lightGradient.addColorStop(0, 'rgba(255, 225, 92, 0.6)'); // FFE15C
-    lightGradient.addColorStop(1, 'rgba(255, 225, 92, 0)');
-
-    window.lightChart = new Chart(lightCtx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: '조도 (lux)',
-                data: lightData,
-                borderColor: '#FFE15C',
-                backgroundColor: lightGradient,
-                fill: true,
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-        }
-    });
-};
+        };
     </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -125,12 +130,12 @@ window.onload = () => {
         <h1>{{ message }}</h1>
         <div class="chart__title">내부 온습도</div>
         <div class="chart__row">
-            <canvas id="temperatureChart"></canvas>
-            <canvas id="humidityChart"></canvas>
+            <canvas id="temperatureChart" width="500" height="300"></canvas>
+            <canvas id="humidityChart" width="500" height="300"></canvas>
         </div>
         <div class="chart__title">내부 조도</div>
         <div class="chart__row">
-            <canvas id="lightChart"></canvas>
+            <canvas id="lightChart" width="500" height="300"></canvas>
         </div>
     </main>
 </body>
