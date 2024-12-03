@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify
 from sensors import setup_sensors, get_distance, measure_brightness
 from switches import setup_switches, get_selected_photo_count, confirm_selection, get_retake_option, is_long_press
-from led_control import setup_leds, control_leds
+from led_control import setup_leds, control_leds_by_brightness
 from camera import take_photo_series
 import datetime
 import paho.mqtt.client as mqtt
@@ -20,18 +20,21 @@ humidity_data = 0
 
 @app.route('/')
 def home():
+    global light_data
+    light_data = measure_brightness()
+    control_leds_by_brightness(light_data)  # 조도에 따라 LED 제어
     return render_template('index.html', message="카메라 앞에 다가가면 촬영이 시작됩니다.")
 
 @app.route('/check_proximity')
 def check_proximity():
     distance = get_distance()
-    is_near = distance < 30  # 30cm 이내일 때 입장으로 간주
+    is_near = distance < 10  # 10cm 이내일 때 입장으로 간주
     return jsonify(is_near=is_near, distance=distance)
 
 @app.route('/enter')
 def enter_booth():
     brightness = measure_brightness()  # 조도 값 측정
-    control_leds(brightness)  # 밝기에 따라 LED 제어
+    control_leds_by_brightness(brightness)  # 밝기에 따라 LED 제어
     return render_template('select_count.html', message="안녕하세요. 스위치를 이용해 촬영 매수를 선택해주세요.")
 
 @app.route('/check_switches')
@@ -76,7 +79,7 @@ def check_long_press():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
-    return render_template('admin_dashboard.html', message="관리자 페이지에 오신 것을 환영합니다!")
+    return render_template('admin_dashboard.html', message="관리자 페이지")
 
 @app.route('/get_sensor_data')
 def get_sensor_data():
