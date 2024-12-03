@@ -4,6 +4,7 @@ import Adafruit_MCP3008
 import busio
 from adafruit_htu21d import HTU21D
 import paho.mqtt.client as mqtt
+from led_control import setup_leds, control_leds_by_brightness
 
 TRIG = 20
 ECHO = 16
@@ -15,6 +16,9 @@ htu21d_sensor = HTU21D(i2c)
 # MCP3008 설정
 LIGHT_SENSOR_CHANNEL = 0
 mcp = Adafruit_MCP3008.MCP3008(clk=11, cs=8, miso=9, mosi=10)
+
+# led 초기화
+setup_leds()
 
 def setup_sensors():
     GPIO.setmode(GPIO.BCM)
@@ -62,6 +66,7 @@ def publish_sensor_data():
         mqtt_client.publish("humidity", humidity)
 
         print(f"Published - Light: {brightness}, Temperature: {temperature}, Humidity: {humidity}%")
+        control_leds_by_brightness(brightness)
         time.sleep(1)
 
 if __name__ == "__main__":
