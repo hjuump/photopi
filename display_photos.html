@@ -14,7 +14,7 @@
         fetch('/check_retake_switches')
           .then((response) => response.json())
           .then((data) => {
-            console.log('Retake Option Received:', data); // 데이터 디버깅
+            console.log("Retake Option Received:", data); // 데이터 디버깅
             retakeOption = data.next === 1 ? 'retry' : 'end';
             updateOptionDisplay(retakeOption);
             if (data.confirm) {
