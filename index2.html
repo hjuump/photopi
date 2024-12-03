@@ -5,29 +5,29 @@
     <title>포토파이</title>
     <script>
       function checkProximity() {
-    fetch('/check_proximity')
-        .then((response) => response.json())
-        .then((data) => {
-            const distance = data.distance;
+        fetch('/check_proximity')
+            .then((response) => response.json())
+            .then((data) => {
+                const distance = data.distance;
 
-            // 거리 텍스트 업데이트
-            document.getElementById('distance').innerText = `센서와의 거리: ${distance} cm`;
+                // 거리 텍스트 업데이트
+                document.getElementById('distance').innerText = `센서와의 거리: ${distance} cm`;
 
-            // 바 너비 계산 및 업데이트
-            const barInner = document.querySelector('.sensor-bar__inner');
-            const percentage = Math.max(
-                0,
-                Math.min(((30 - distance) / 20) * 100, 100) // 30cm에서 10cm까지 20cm 구간을 100%로 계산
-            );
-            barInner.style.width = `${percentage}%`;
+                // 바 너비 계산 및 업데이트
+                const barInner = document.querySelector('.sensor-bar__inner');
+                const percentage = Math.max(
+                    0,
+                    Math.min(((30 - distance) / 20) * 100, 100) // 30cm에서 10cm까지 20cm 구간을 100%로 계산
+                );
+                barInner.style.width = `${percentage}%`;
 
-            // 입장 기준 확인
-            if (data.is_near) {
-                window.location.href = '/enter';
-            }
-        })
-        .catch((error) => console.error('Error:', error));
-}
+                // 입장 기준 확인
+                if (data.is_near) {
+                    window.location.href = '/enter';
+                }
+            })
+            .catch((error) => console.error('Error:', error));
+        }
 
 
       setInterval(checkProximity, 2000); // 2초 간격으로 상태 확인
