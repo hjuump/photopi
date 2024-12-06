@@ -45,6 +45,34 @@ Photo Pi는 초음파 센서를 이용해 사용자의 입장을 자동으로 �
 
 ---
 
+## 🗂 시스템 구조
+
+```plaintext
+photopi/
+├── app.py               # Flask 웹 서버
+├── camera.py            # 카메라 제어 모듈
+├── led_control.py       # LED 제어 모듈
+├── sensors.py           # 센서 데이터 처리 모듈
+├── switches.py          # 스위치 입력 처리
+├── utils.py             # 유틸리티 함수
+├── static/              # 정적 파일 (CSS, 이미지 등)
+│   ├── logo.svg
+│   ├── photos/          # 촬영된 사진 저장 디렉토리
+│   │   ├── photo_1.jpg
+│   │   └── photo_2.jpg
+│   └── style.css        # 스타일시트
+└── templates/           # HTML 템플릿
+    ├── index.html              # 초기 화면
+    ├── select_count.html       # 촬영 매수 선택 화면
+    ├── display_photos.html     # 결과 화면
+    ├── start_photo.html        # 촬영 시작 화면
+    ├── countdown.html          # 카운트다운 화면
+    ├── end.html                # 종료 화면
+    └── admin_dashboard.html    # 관리자 페이지
+```
+
+---
+
 ## ⚙ 기술 스택
 
 | **구분**       | **기술/장치**                    | **설명**                                   |
@@ -85,7 +113,7 @@ Photo Pi는 초음파 센서를 이용해 사용자의 입장을 자동으로 �
 
 ---
 
-## 🎯 기술적 도전
+## 🎯 주요 기술 과제
 
 1. **센서 데이터 통합**  
    - 초음파, 조도, 온습도 센서 데이터를 Flask와 MQTT를 통해 실시간 수집 및 처리
