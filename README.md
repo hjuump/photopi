@@ -5,7 +5,7 @@
 
 ---
 
-## 🎥 Demo
+## 🎥 Slide Preview
 
 ![Presentation Slides](docs/slides.gif)  
 
