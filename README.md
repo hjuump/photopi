@@ -102,6 +102,7 @@ photopi/
     ```bash
     git clone https://github.com/hjuump/photopi.git
     cd photopi
+    pip install -r requirements.txt
     ```
 
 3. Flask 서버 실행
